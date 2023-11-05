@@ -137,3 +137,83 @@ createUser();
 updateUser();
 sendEmail();
 ```
+
+
+## Consideraciones para las clases
+
+Deben tener nombres formados por un sustantivo o frases de sustantivos, debemos evitar nombres genéricos porque estoy puede llevarnos a que las clases realicen más trabajo del que deberían.
+
+- El nombre es lo más importante de la clase.
+- Formados por un sustantivo o frases de sustantivo.
+- No deben ser muy genéricos.
+- Usar UpperCamelCase.
+
+```javascript
+// Malos
+class Manager {}
+class Data {}
+class Info {}
+class Individual {}
+class Processor {}
+class SpecialMonsterView {}
+
+class SpecialViewingCaseMonsterManagerEventsHandlerActivitySingleton {}
+```
+
+### 3 preguntas para determinar si es un buen nombre
+- ¿Qué hace exactamente la clase?
+- ¿Cómo esta clase realiza exactamente cierta tarea?
+- ¿Hay algo específico sobre su ubicación?
+
+Si algo no tiene sentido, remuévelo o refactoriza, además tampoco se deben poner muchas palabras en el nombre de nuestra clase.
+
+
+## Nombres de funciones, argumentos y parámetros
+
+*"Sabemos que estamos desarrollando código limpio cuando cada función hace exactamente lo que su nombre indica.. - __Ward Cunningham__"*.
+
+```javascript
+function sendEmail(toWhom: string): boolean {
+	// Verificar correo
+	if(!toWhom.includes("@")) return false;
+
+	// Construir el cuerpo o mensaje
+
+	// Enviar correo
+
+	// Si todo sale bien
+	return true;
+}
+
+function sendEmail(): boolean {
+	// Verificar si el usuario existe
+
+	// Revisar contraseña
+
+	// Crear usuario en Base de datos
+
+	// Si todo sale bien
+	return true;
+}
+```
+
+Es bueno limitar a 3 parámetros posicionales, para que no se vean muy aglomeradas.
+
+```javascript
+// No muy bien
+function sendEmail(toWhom: string, from: string, body: string, subject: string, apiKey: string): boolean {}
+
+// Bien
+function sendEmail(toWhom: string, from: string, body: string): boolean {}
+
+// Mejor
+interface SendEmailOptions {
+	toWhom: string;
+	from: string;
+	body: string;
+	subject: string;
+	apiKey: string;
+}
+
+function sendEmail({.toWhom, from, body, subject, apiKey }: SendEmailOptions): boolean {}
+```
