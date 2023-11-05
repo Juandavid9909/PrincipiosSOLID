@@ -217,3 +217,21 @@ interface SendEmailOptions {
 
 function sendEmail({.toWhom, from, body, subject, apiKey }: SendEmailOptions): boolean {}
 ```
+
+### Otras cosas a tener en cuenta
+- Simplicidad es fundamental.
+- Funciones de tamaño reducido.
+- Funciones de una sola línea sin causar complejidad.
+- Menos de 20 líneas.
+- Evitar el uso del `else`.
+- Prioriza el uso de la condicional ternaria.
+
+
+## DRY (Don't repeat yourself)
+
+*"Si quieres ser un programador productivo esfuérzate en escribir código legible. - __Robert C. Martin__"*.
+
+- Simplemente es evitar tener duplicidad en código.
+- Simplifica las pruebas.
+- Ayuda a centralizar procesos.
+- Aplicar el principio DRY, usualmente lleva a refactorizar.
