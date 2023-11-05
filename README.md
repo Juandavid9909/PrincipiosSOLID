@@ -70,3 +70,70 @@ class User {}
 
 interface User {}
 ```
+
+
+## Nombres según el tipo de dato
+
+Es una buena opción tener en los nombres de las variables algo que nos de una idea de qué tipo de dato contiene.
+
+### Arreglos - Arrays
+```javascript
+// Malo
+const fruit = ["manzana", "platano", "fresa"];
+
+// Regular
+const fruitList = ["manzana", "platano", "fresa"];
+
+// Bueno
+const fruits = ["manzana", "platano", "fresa"];
+
+// Mejor
+const fruitNames = ["manzana", "platano", "fresa"];
+```
+
+### Booleanos - Booleans
+```javascript
+// Mal
+const open = true;
+const write = true;
+const fruit = true;
+const active = false;
+const noValues = true;
+const notEmpty = true;
+
+// Mejor
+const isOpen = true;
+const canWrite = true;
+const hasFruit = true;
+const isActive = false;
+const hasValues = false;
+const isEmpty = false;
+```
+
+### Números - Numbers
+```javascript
+// Mal
+const fruits = 3;
+const cars = 10;
+
+// Mejor
+const maxFruits = 5;
+const minFruits = 1;
+const totalFruits = 3;
+const totalOfCars = 5;
+```
+
+### Funciones - Functions
+Debemos ser claros en el nombre para indicar qué hace la función, pero también abstenerse de toda la implementación que hace la función.
+
+```javascript
+// Mal
+createUserIfNotExists();
+updateUserIfNotEmpty();
+sendEmailIfFieldsValid();
+
+// Mejor
+createUser();
+updateUser();
+sendEmail();
+```
