@@ -170,7 +170,7 @@ Si algo no tiene sentido, remuévelo o refactoriza, además tampoco se deben pon
 
 ## Nombres de funciones, argumentos y parámetros
 
-*"Sabemos que estamos desarrollando código limpio cuando cada función hace exactamente lo que su nombre indica.. - __Ward Cunningham__"*.
+*"Sabemos que estamos desarrollando código limpio cuando cada función hace exactamente lo que su nombre indica.." - __Ward Cunningham__*.
 
 ```javascript
 function sendEmail(toWhom: string): boolean {
@@ -229,9 +229,72 @@ function sendEmail({.toWhom, from, body, subject, apiKey }: SendEmailOptions): b
 
 ## DRY (Don't repeat yourself)
 
-*"Si quieres ser un programador productivo esfuérzate en escribir código legible. - __Robert C. Martin__"*.
+*"Si quieres ser un programador productivo esfuérzate en escribir código legible." - __Robert C. Martin__*.
 
 - Simplemente es evitar tener duplicidad en código.
 - Simplifica las pruebas.
 - Ayuda a centralizar procesos.
 - Aplicar el principio DRY, usualmente lleva a refactorizar.
+
+
+# Clean Code - Clases y Comentarios
+
+
+## Estructura recomendada de una clase
+
+*"El buen código parece estar escrito por alguien a quien le importa." -__Michael Feathers__*.
+
+```typescript
+class HtmlElement {
+	public static domReady: boolean = false;
+
+	private _id: string;
+	private type: string;
+	private updatedAt: number;
+
+	static createInput(id: string) {
+		return new HtmlElement(id, "input");
+	}
+
+	constructor(id: string, type: string) {
+		this._id = id;
+		this.type = type;
+		this.updatedAt = Date.now();
+	}
+
+	setType(type: string) {
+		this.type = type;
+		this.updatedAt = Date.now();
+	}
+
+	get id(): string {
+		return this.id;
+	}
+}
+```
+
+### Comenzar con lista de propiedades
+1. Propiedades estáticas.
+2. Propiedades públicas de último.
+
+### Métodos
+1. Empezando por los constructores estáticos.
+2. Luego el constructor.
+3. Seguidamente métodos estáticos.
+4. Métodos privados después.
+5. Resto de métodos de instancia ordenados de mayor a menor importancia.
+6. Getters y Setters al final.
+
+
+## Comentarios en el código
+
+Evitar usar comentarios, pero cuando usamos librerías de terceros, APIs, frameworks, entre otras cosas, nos encontraremos ante situaciones en las que escribir un comentario será mejor que dejar una solución compleja o un hack sin explicación.
+
+Los comentarios deberían de ser la excepción, no la regla.
+
+*"No comentes el código mal escrito, reescríbelo". __Brian W. Kernighan__*.
+
+
+## Uniformidad en el proyecto
+
+Hay que procurar mantener siempre la misma nomenclatura en tanto nuestro sistema de archivos como los nombres de nuestras funciones, clases, etc. Por ejemplo si en nuestra carpeta de componentes tenemos otra carpeta para el componente product-list mientras que product-item está en la raíz, ya que lo correcto sería que ambos tengan el mismo nivel de sistema de archivos.
