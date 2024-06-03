@@ -298,3 +298,97 @@ Los comentarios deberían de ser la excepción, no la regla.
 ## Uniformidad en el proyecto
 
 Hay que procurar mantener siempre la misma nomenclatura en tanto nuestro sistema de archivos como los nombres de nuestras funciones, clases, etc. Por ejemplo si en nuestra carpeta de componentes tenemos otra carpeta para el componente product-list mientras que product-item está en la raíz, ya que lo correcto sería que ambos tengan el mismo nivel de sistema de archivos.
+
+
+# Acrónimo STUPID
+
+Son cosas que debemos evitar en nuestras aplicaciones, muchas veces pecamos de estos errores y es importante evitarlos.
+
+
+## Code Smells
+
+- **S**ingleton: Patrón singleton.
+- **T**ight Coupling: Alto acomplamiento.
+- **U**ntestability: Código no probable (unit test).
+- **P**remature optimization: Optimizaciones prematuras.
+- **I**ndescriptive Naming: Nombres poco descriptivos.
+- **D**uplication: Duplicidad de código, no aplicar el principio DRY.
+
+### Singleton
+#### Ventajas
+- Garantiza una única instancia de la clase a lo largo de toda la aplicación.
+
+#### Desventajas
+- Vive en el contexto global.
+- Puede ser modificado por cualquiera y en cualquier momento.
+- No es rastreable.
+- Difícil de testear debido a su ubicación.
+
+### Tight Coupling
+Lo ideal es tener bajo acoplamiento y buena cohesión.
+
+*"Queremos diseñar componentes que sean autocontenidos, autosuficientes e independientes. Con un objetivo y un propósito bien definido." - __The Pragmatic Programmer__*.
+
+#### Desventajas
+- Un cambio en un módulo por lo general provoca un efecto dominó de lo cambios en otros módulos.
+- El ensamblaje de módulos puede requerir más esfuerzo y/o tiempo debido a la mayor dependencia entre módulos.
+- Un módulo en particular puede ser más difícil de reutilizar y/o probar porque se deben incluir módulos independientes.
+
+#### Posibles soluciones
+- "A" tiene un atributo que se refiere a "B".
+- "A" llama a los servicios de un objeto "B".
+- "A" tiene un método que hace referencia a "B" (a través del tipo de retorno o parámetro).
+- "A" es una subclase de (o implementa) la clase "B".
+
+#### Cohesión
+- La cohesión se refiere a lo que la clase (o módulo) puede hacer.
+- La baja cohesión significaría que la clase realiza una gran variedad de acciones: Es amplia, no se enfoca en lo que debe hacer.
+- Alta cohesión significa que la clase se enfoca en lo que debería estar haciendo, es decir, solo métodos relacionados con la intención de la clase.
+
+#### Acoplamiento
+Se refiere a cuán relacionadas o dependientes son dos clases o módulos entre sí.
+
+- En bajo acoplamiento, cambiar algo importante en una clase no debería afectar a la otra.
+- En alto acoplamiento, dificultaría el cambio y el mantenimiento de su código; dado que las clases están muy unidas, hacer un cambio podría requerir una renovación completa del sistema.
+
+Un buen diseño de software tiene alta cohesión y bajo acoplamiento.
+
+### Código no probable
+- Código con alto acoplamiento.
+- Código con muchas dependencias no inyectadas.
+- Dependencias en el contexto global (tipo Singleton).
+
+Debemos de tener en mente las pruebas desde la creación del código.
+
+### Optimizaciones prematuras
+Mantener abiertas las opciones retrasando la toma de decisiones nos permite darle mayor relevancia a lo que es más importante en una aplicación.
+
+No debemos anticiparnos a los requisitos y desarrollar abstracciones innecesarias que puedan añadir una complejidad accidental.
+
+#### Complejidad accidental
+Cuando implementamos una solución compleja a la mínima indispensable.
+
+#### Complejidad esencial
+La complejidad es inherente al problema.
+
+### Nombres poco descriptivos
+- Nombres de variables mal nombradas.
+- Nombres de clases genéricas.
+- Nombres de funciones mal nombradas.
+- Ser muy específico o demasiado genérico.
+
+### Duplicidad de código
+- Código es idéntico y cumple la misma función.
+- Un cambio implicaría actualizar todo el código idéntico en varios lugares.
+- Incrementa posibilidades de error humano al olvidad una parte para actualizar.
+
+
+## Otros olores honoríficos
+
+### Inflación
+Cuando una parte del código (función, etc) está creciendo mucho, lo ideal es cortar o hacer más pequeño dicho método. Es decir, delegar ese método enorme en pequeños submétodos con tareas específicas que nos permita tener un código más legible y fácil de mantener.
+
+### Obsesión primitiva
+El uso de primitivos en lugar de objetos para manejar algunos datos. El uso de constantes para codificar cierta información. Esto es algo muy frecuente ya que usualmente podemos solucionar algo con sólo "1 espacio en memoria más". El tema es que esto puede ir creciendo y al final será una bola de nieve enorme.
+
+Si se tienen una gran cantidad de variables primitivas, se puede crear una clase, función o módulo, para que tengamos todo centralizado y permitir la reutilización.
