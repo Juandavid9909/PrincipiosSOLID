@@ -1,5 +1,5 @@
 import { PhotosService, PostService, TodoService } from './02-open-close-b';
-import { HttpClient } from './03-open-close-c';
+import { HttpClient } from './02-open-close-c';
 
 (async () => {
 
