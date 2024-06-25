@@ -392,3 +392,150 @@ Cuando una parte del código (función, etc) está creciendo mucho, lo ideal es 
 El uso de primitivos en lugar de objetos para manejar algunos datos. El uso de constantes para codificar cierta información. Esto es algo muy frecuente ya que usualmente podemos solucionar algo con sólo "1 espacio en memoria más". El tema es que esto puede ir creciendo y al final será una bola de nieve enorme.
 
 Si se tienen una gran cantidad de variables primitivas, se puede crear una clase, función o módulo, para que tengamos todo centralizado y permitir la reutilización.
+
+
+# Principios SOLID
+
+Los principios SOLID nos indican cómo organizar nuestras funciones y estructuras de datos en componentes y cómo dichos componentes deben estar interconectados. A pesar de que suele estar enfocado en las clases, también puede ser utilizado en los módulos, etc.
+
+
+## Acrónimo SOLID
+
+- **S**ingle Responsibility: Responsabilidad única.
+- **O**pen and Close: Abierto y cerrado.
+- **L**iskov Substitution: Sustitución de Liskov.
+- **I**nterface segregation: Segregación de interfaz.
+- **D**ependency inversion: Inversión de dependencias.
+
+Importante recordar que son principios, no reglas. Las reglas son obligatorias, los principios son recomendaciones que nos ayudarán a tener un mejor código.
+
+
+## SRP - Principio de responsabilidad única
+
+*"Nunca debería haber más de un motivo por el cual cambiar una clase o un módulo." - __Robert C. Martin__*.
+
+Importante tener claro que tener una única responsabilidad no significa hacer una única cosa. Se trata de diseñar componentes que sólo estén expuestos a una fuente de cambio.
+
+### Ejemplo
+
+```javascript
+// Sin principio SRP
+(()  => {
+	interface Product {
+		id: number;
+		name: string;
+	}
+
+	// Usualmente, esto es una clase para controlar la vista que es desplegada al usuario
+	// Recuerden que podemos tener muchas vistas que realicen este mismo trabajo.
+	class  ProductBloc {
+
+		loadProduct(id: number) {
+			// Realiza un proceso para obtener el producto y retornarlo
+			console.log('Producto: ',{ id, name: 'OLED Tv' });
+		}
+
+		saveProduct(product: Product) {
+			// Realiza una petición para salvar en base de datos
+			console.log('Guardando en base de datos', product );
+		}
+
+		notifyClients() {
+			console.log('Enviando correo a los clientes');
+		}
+
+		onAddToCart(  productId: number ) {
+			// Agregar al carrito de compras
+			console.log('Agregando al carrito ', productId );
+		}
+	}
+
+	const  productBloc  =  new  ProductBloc();
+
+	productBloc.loadProduct(10);
+	productBloc.saveProduct({ id: 10, name: 'OLED TV' });
+	productBloc.notifyClients();
+	productBloc.onAddToCart(10);
+})();
+
+
+// Con principio SRP
+(()  => {
+	interface Product {
+		id: number;
+		name: string;
+	}
+
+	class  ProductService {
+
+		getProduct(id: number) {
+			console.log('Producto: ',{ id, name: 'OLED Tv' });
+		}
+
+		saveProduct(product: Product) {
+			console.log('Guardando en base de datos', product );
+		}
+	}
+
+	class  Mailer {
+
+		private  masterEmail: string =  "juandavid@mail.com";
+
+		sendEmail(emailList: string[], template:  "to-clients"  |  "to-admins") {
+			console.log('Enviando correo a los clientes', template);
+		}
+	}
+
+	// Usualmente, esto es una clase para controlar la vista que es desplegada al usuario
+	// Recuerden que podemos tener muchas vistas que realicen este mismo trabajo.
+	class  ProductBloc {
+
+		private  productService: ProductService;
+		private  mailer: Mailer;
+
+		constructor(productService: ProductService, mailer: Mailer) {
+			this.productService  =  productService;
+			this.mailer  =  mailer;
+		}
+
+		loadProduct(id: number) {
+			this.productService.getProduct(id);
+		}
+
+		saveProduct(product: Product) {
+			this.productService.saveProduct(product);
+		}
+
+		notifyClients() {
+			this.mailer.sendEmail(["eduardo@google.com"], "to-clients");
+		}
+	}
+
+	class  CartBloc {
+
+		private  itemsInCart: Object[] = [];
+
+		addToCart(productId: number) {
+			console.log('Agregando al carrito ', productId );
+		}
+	}
+
+	const  productService  =  new  ProductService();
+	const  mailer  =  new  Mailer();
+	const  productBloc  =  new  ProductBloc(productService, mailer);
+	const  cartBloc  =  new  CartBloc();
+
+	productBloc.loadProduct(10);
+	productBloc.saveProduct({ id: 10, name: 'OLED TV' });
+	productBloc.notifyClients();
+	cartBloc.addToCart(10);
+})();
+```
+
+### Detectar incumplimiento de SRP
+- Nombres de clases y módulos demasiado genéricos. Esto termina haciendo que esta clase y/o módulo tenga demasiadas responsabilidades.
+- Cambios en el código suelen afectar la clase o módulo.
+- La clase involucra múltiples capas (almacenamiento, comunicación con la base de datos, capa para interfaz de usuario).
+- Número elevado de importaciones.
+- Cantidad elevada de métodos públicos.
+- Excesivo número de líneas de código.
