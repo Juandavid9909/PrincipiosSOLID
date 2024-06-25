@@ -684,6 +684,167 @@ export  class  HttpClient {
 }
 ```
 
-### Detectar incumplimiento de OPC
+### Detectar incumplimiento de OCP
 - Cambios normalmente afectan nuestra clase o módulo.
 - Cuando una clase o módulo afecta muchas capas (presentación, almacenamiento, etc).
+
+
+## Principio de Substitución de Liskov
+
+*"Las funciones que utilicen punteros o referencias a clases base deben ser capaces de usar objetos de clases derivadas sin saberlo." - __Robert C. Martin__*.
+
+Siendo U un subtipo de T, cualquier instancia de T debería poder ser sustituida por cualquier instancia de U sin alterar las propiedades del sistema.
+
+### Ejemplo
+```typescript
+// Archivo main
+import { Tesla, Audi, Toyota, Honda } from  './03-liskov-b';
+
+(()  => {
+	const  printCarSeats  =  (  cars: (Tesla | Audi | Toyota | Honda)[] )  => {
+
+	for (const  car  of  cars) {
+		if( car  instanceof Tesla ) {
+			console.log( 'Tesla', car.getNumberOfTeslaSeats() )
+			continue;
+		}
+
+		if( car  instanceof Audi ) {
+			console.log( 'Audi', car.getNumberOfAudiSeats() )
+			continue;
+		}
+
+		if( car  instanceof Toyota ) {
+			console.log( 'Toyota', car.getNumberOfToyotaSeats() )
+			continue;
+		}
+
+		if( car  instanceof Honda ) {
+			console.log( 'Honda', car.getNumberOfHondaSeats() )
+			continue;
+		}
+	}	
+}
+
+const  cars  = [
+	new  Tesla(7),
+	new  Audi(2),
+	new  Toyota(5),
+	new  Honda(5),
+];
+
+printCarSeats( cars );
+})();
+
+// Archivo extra
+export  class  Tesla {
+
+	constructor(  private  numberOfSeats: number ) {}
+
+	getNumberOfTeslaSeats() {
+		return  this.numberOfSeats;
+	}
+}
+
+export  class  Audi {
+
+	constructor(  private  numberOfSeats: number ) {}
+
+	getNumberOfAudiSeats() {
+		return  this.numberOfSeats;
+	}
+}
+
+export  class  Toyota {
+
+	constructor(  private  numberOfSeats: number ) {}
+
+	getNumberOfToyotaSeats() {
+		return  this.numberOfSeats;
+	}
+}
+
+export  class  Honda {
+
+	constructor(  private  numberOfSeats: number ) {}
+
+	getNumberOfHondaSeats() {
+		return  this.numberOfSeats;
+	}
+}
+```
+
+Para agregar una nueva marca de carro se modificarían muchas cosas, además de que tocaría crear la nueva clase repitiendo el mismo método que en las demás.
+
+```typescript
+// Archivo main
+import { Tesla, Audi, Toyota, Honda, Vehicle } from  './03-liskov-b';
+
+(()  => {
+	const  printCarSeats  =  (  cars: (Tesla | Audi | Toyota | Honda)[] )  => {
+
+	cars.forEach((car)  => {
+		console.log(car.constructor.name, car.getNumberOfSeats());
+	});	
+}
+
+const  cars  = [
+	new  Tesla(7),
+	new  Audi(2),
+	new  Toyota(5),
+	new  Honda(5),
+];
+
+printCarSeats( cars );
+})();
+
+// Archivo extra
+export  abstract  class  Vehicle {
+
+	abstract  getNumberOfSeats(): number;
+}
+
+export  class  Tesla  extends  Vehicle {
+
+	constructor(  private  numberOfSeats: number ) {
+		super();
+	}
+
+	getNumberOfSeats() {
+		return  this.numberOfSeats;
+	}
+}
+
+export  class  Audi  extends  Vehicle {
+
+	constructor(  private  numberOfSeats: number ) {
+		super();
+	}
+
+	getNumberOfSeats() {
+		return  this.numberOfSeats;
+	}
+}
+
+export  class  Toyota  extends  Vehicle {
+
+	constructor(  private  numberOfSeats: number ) {
+		super();
+	}
+
+	getNumberOfSeats() {
+		return  this.numberOfSeats;
+	}
+}
+
+export  class  Honda  extends  Vehicle {
+
+	constructor(  private  numberOfSeats: number ) {
+		super();
+	}
+
+	getNumberOfSeats() {
+		return  this.numberOfSeats;
+	}
+}
+```
