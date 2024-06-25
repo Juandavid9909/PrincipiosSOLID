@@ -172,7 +172,7 @@ Si algo no tiene sentido, remuévelo o refactoriza, además tampoco se deben pon
 
 *"Sabemos que estamos desarrollando código limpio cuando cada función hace exactamente lo que su nombre indica.." - __Ward Cunningham__*.
 
-```javascript
+```typescript
 function sendEmail(toWhom: string): boolean {
 	// Verificar correo
 	if(!toWhom.includes("@")) return false;
@@ -199,7 +199,7 @@ function sendEmail(): boolean {
 
 Es bueno limitar a 3 parámetros posicionales, para que no se vean muy aglomeradas.
 
-```javascript
+```typescript
 // No muy bien
 function sendEmail(toWhom: string, from: string, body: string, subject: string, apiKey: string): boolean {}
 
@@ -418,7 +418,7 @@ Importante tener claro que tener una única responsabilidad no significa hacer u
 
 ### Ejemplo
 
-```javascript
+```typescript
 // Sin principio SRP
 (()  => {
 	interface Product {
@@ -539,3 +539,151 @@ Importante tener claro que tener una única responsabilidad no significa hacer u
 - Número elevado de importaciones.
 - Cantidad elevada de métodos públicos.
 - Excesivo número de líneas de código.
+
+
+## OCP - Principio de abierto y cerrado
+
+Es un principio que depende mucho del contexto. Establece que las entidades de software (clases, módulos, métodos, etc) deben estar abiertas para la extensión, pero cerradas para la modificación.
+
+La forma más sencilla de demostrar este principio es considerar un método que hace una cosa. Digamos que tenemos que grabar o escribir en un archivo de texto, y para ello tenemos una función, y de repente llegan nuevos requisitos, ahora ya el archivo no se llamará `hola.txt` sino `adios.txt`. Al tener que entrar a nuestro método a configurar el nombre del archivo estaremos violando este principio.
+
+La forma en la que podríamos solventar esta situación sería crear un método en el que se reciba el nombre del archivo, y no importaría el nombre del archivo que necesitemos, ya que nuestra clase no se verá modificada y es tolerante al cambio.
+
+Este principio también se puede lograr de muchas maneras, incluso mediante el uso de la herencia o mediante patrones de diseño de composición como el patrón de estrategia.
+
+### Ejemplo
+```javascript
+// Archivo main
+import { PhotosService, PostService, TodoService } from  './02-open-close-b';
+
+(async  ()  => {
+
+	const todoService = new TodoService();
+	const postService = new PostService();
+	const photosService = new PhotosService();
+
+	const todos = await todoService.getTodoItems();
+	const posts = await postService.getPosts();
+	const photos = await photosService.getPhotos();
+
+	console.log({ todos, posts, photos });
+})();
+
+// Archivo auxiliar
+// Hay que agregar la dependencia de axios ```yarn add axios```
+import  axios  from  'axios';
+
+export  class  TodoService {
+
+	async  getTodoItems() {
+		const { data } =  await  axios.get('https://jsonplaceholder.typicode.com/todos/');
+
+		return  data;
+	}
+}
+
+export  class  PostService {
+
+	async  getPosts() {
+		const { data } =  await  axios.get('https://jsonplaceholder.typicode.com/posts');
+
+		return  data;
+	}
+}
+
+export  class  PhotosService {
+
+	async  getPhotos() {
+		const { data } =  await  axios.get('https://jsonplaceholder.typicode.com/photos');
+
+		return  data;
+	}
+}
+```
+
+Como podemos ver, la clase de servicio tiene todas las responsabilidades, ya que pueden cambiar las URLs o la forma en las que se ejecutan los llamados en Axios, así que se pueden generar modificaciones y violar el principio.
+
+```typescript
+// Archivo main
+import { PhotosService, PostService, TodoService } from './02-open-close-b';
+
+(async ()  => {
+
+	const httpClient = new HttpClient();
+
+	const todoService = new TodoService(httpClient);
+	const postService = new PostService(httpClient);
+	const photosService = new PhotosService(httpClient);
+
+	const todos = await todoService.getTodoItems();
+	const posts = await postService.getPosts();
+	const photos = await photosService.getPhotos();
+
+	console.log({ todos, posts, photos });
+})();
+
+// Archivo auxiliar
+import { HttpClient } from  "./03-open-close-c";
+
+export  class  TodoService {
+
+	async  getTodoItems() {
+		const { data } =  await  this.http.get('https://jsonplaceholder.typicode.com/todos/');
+
+		return  data;
+	}
+}
+
+export  class  PostService {
+
+	async  getPosts() {
+		const { data } =  await  this.http.get('https://jsonplaceholder.typicode.com/posts');
+
+		return  data;
+	}
+}
+
+export  class  PhotosService {
+
+	async  getPhotos() {
+		const { data } =  await  this.http.get('https://jsonplaceholder.typicode.com/photos');
+
+		return  data;
+	}
+}
+
+// Nueva clase
+import  axios  from  "axios";
+
+export  class  HttpClient {
+
+	async  get(url: string) {
+		const { data, status } =  await  axios.get(url);
+
+		return { data, status };
+	}
+}
+
+// Nueva clase removiendo Axios
+// import  axios  from  "axios";
+
+export  class  HttpClient {
+
+	// async get(url: string) {
+		// const { data, status } = await axios.get(url);
+
+		// return { data, status };
+	// }
+	
+	async  get(url: string) {
+		const  resp  =  await  fetch(url);
+		const  data  =  await  resp.json();
+
+		return { data, status: resp.status };
+	}
+}
+```
+
+### Detectar incumplimiento de OPC
+- Cambios normalmente afectan nuestra clase o módulo.
+- Cuando una clase o módulo afecta muchas capas (presentación, almacenamiento, etc).
