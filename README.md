@@ -957,3 +957,65 @@ class  Penguin  implements  Bird, SwimmerBird {
 
 ### Detectar incumplimiento de ISP
 - Si las interfaces que diseñamos nos obligan a violar los principios de responsabilidad única y substitución de Liskov.
+
+
+## Principio de inversión de dependencias
+
+*"Los módulos de alto nivel no deben depender de módulos de bajo nivel. Ambos deben depender de abstracciones. Las abstracciones no deben depender de concreciones. Los detalles deben depender de abstracciones." - __Robert C. Martin__*.
+
+- Los módulos de alto nivel no deberían depender de módulos de bajo nivel.
+- Ambos deberían depender de abstracciones.
+- Las abstracciones no deberían depender de detalles.
+- Los detalles deberían depender de abstracciones.
+
+Los componentes más importantes son aquellos centrados en resolver el problema subyacente al negocio, es decir, la capa de dominio.
+
+Los menos importantes son los que están próximos a la infraestructura, es decir, aquellos relacionados con la UI, la persistencia, la comunicación con APIs externas, etc.
+
+Depender de abstracciones se refiere a clases abstractas o interfaces. Uno de los motivos más importantes por el cual las reglas de negocio o capa de dominio deben depender de estas y no de concreciones es que aumenta su tolerancia al cambio.
+
+### ¿Por qué obtenemos este beneficio?
+- Cada cambio en un componente abstracto implica un cambio en su implementación.
+- Por el contrario, los cambios en implementaciones concretas, la mayoría de veces, no requieren cambios en las interfaces que implementa.
+
+### Inyección de dependencias
+Dependencia en programación, significa que un módulo o componente requiere de otro para poder realizar su trabajo.
+
+En algún momento nuestro programa o aplicación llegará a estar formado por muchos módulos. Cuando esto pase, es cuando debemos usar inyección de dependencias.
+
+### Ejemplo
+```typescript
+// Sin inyección de dependencias
+class UseCase {
+	constructor() {
+		this.externalService = new ExternalService();
+	}
+
+	doSomething() {
+		this.externalService.doExternalTask();
+	}
+}
+
+class ExternalService {
+	doExternalTask() {
+		console.log("Doing task...);
+	}
+}
+
+// Con inyección de dependencias
+class UseCase {
+	constructor(externalService: ExternalService) {
+		this.externalService = externalService;
+	}
+
+	doSomething() {
+		this.externalService.doExternalTask();
+	}
+}
+
+class ExternalService {
+	doExternalTask() {
+		console.log("Doing task...);
+	}
+}
+```
