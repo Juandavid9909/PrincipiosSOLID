@@ -998,7 +998,7 @@ class UseCase {
 
 class ExternalService {
 	doExternalTask() {
-		console.log("Doing task...);
+		console.log("Doing task...");
 	}
 }
 
@@ -1015,7 +1015,7 @@ class UseCase {
 
 class ExternalService {
 	doExternalTask() {
-		console.log("Doing task...);
+		console.log("Doing task...");
 	}
 }
 ```
