@@ -1,5 +1,5 @@
 import './style.css';
-import "./solid/03-liskov-a";
+import "./solid/04-segregation";
 
 const app = document.querySelector<HTMLDivElement>('#app')!
 

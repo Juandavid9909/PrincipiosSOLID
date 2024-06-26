@@ -848,3 +848,112 @@ export  class  Honda  extends  Vehicle {
 	}
 }
 ```
+
+
+## Principio de segregación de interfaz
+
+*"Los clientes no deberían estar obligados a depender de interfaces que no utilicen." - __Robert C. Martin__*.
+
+### Ejemplo
+```typescript
+interface Bird {
+	fly(): void;
+	eat(): void;
+	run(): void;
+}
+
+class  Tucan  implements  Bird {
+
+	public  fly() {}
+
+	public  eat() {}
+
+	public  run() {}
+}
+
+class  Humminbird implements  Bird {
+
+	public  fly() {}
+
+	public  eat() {}
+
+	public  run() {}
+}
+
+class  Ostrich  implements  Bird {
+
+	public  fly() {
+		throw  new  Error("Esta ave no vuela");
+	}
+
+	public  eat() {}
+
+	public  run() {}
+}
+
+class  Penguin  implements  Bird {
+
+	public  fly() {
+		throw  new  Error("Esta ave no vuela");
+	}
+
+	public  eat() {}
+
+	public  run() {}
+
+	public  swim() {}
+}
+```
+
+Como podemos ver, al implementar la interfaz en nuestras clases tenemos como inconveniente que por ejemplo para el Avestruz se debe implementar el método `fly` a pesar de que las mismas no vuelan, otro ejemplo es la clase Penguin ya que estos también nadan, y al agregar el método a la clase estamos incumpliendo con la interfaz ya que o tendríamos que quitar el método swim, o tendríamos que agregar el método en todas las clases que implementen la interfaz. Esto es una clara violación a nuestro principio de segregación de interfaz.
+
+```typescript
+interface Bird {
+	eat(): void;
+}
+
+interface FlyingBird {
+	fly(): void;
+}
+
+interface RunningBird {
+	run(): void;
+}
+
+interface SwimmerBird {
+	swim(): void;
+}
+
+class  Tucan  implements  Bird, FlyingBird {
+
+	public  fly() {}
+
+	public  eat() {}
+}
+
+class  Humminbird  implements  Bird, FlyingBird {
+
+	public  fly() {}
+
+	public  eat() {}
+}
+
+class  Ostrich  implements  Bird, RunningBird {
+
+	public  eat() {}
+
+	public  run() {}
+}
+
+class  Penguin  implements  Bird, SwimmerBird {
+
+	public  eat() {}
+
+	public  run() {}
+
+	public  swim() {}
+}
+```
+
+### Detectar incumplimiento de ISP
+- Si las interfaces que diseñamos nos obligan a violar los principios de responsabilidad única y substitución de Liskov.
